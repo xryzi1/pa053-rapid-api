@@ -11,12 +11,11 @@ test_json() {
 
   echo "=== $name (JSON) ==="
   echo "→ $param=$value"
-  curl -s "${BASE_URL}?${param}=${value}" \
-    | jq .
+  curl -s "${BASE_URL}?${param}=${value}" | jq .
   echo
 }
 
-# helper for XML endpoints (using sed to break between tags)
+# helper for XML endpoints
 test_xml() {
   local name=$1
   local param=$2
@@ -30,13 +29,17 @@ test_xml() {
   echo
 }
 
-echo "# Airport Temperature"
-test_json "Airport Temp DEN"        queryAirportTemp DEN
-test_xml  "Airport Temp LAX"        queryAirportTemp LAX
+echo "# Airport Temperature Tests"
+test_json "PRG (Prague)"       queryAirportTemp PRG
+test_json "LAX (Los Angeles)"  queryAirportTemp LAX
+test_xml  "JFK (New York)"     queryAirportTemp JFK
 
-echo "# Stock / Futures Price"
-test_json "S&P Futures (ES=F)"      queryStockPrice "ES=F"
-test_xml  "S&P Futures (ES=F)"      queryStockPrice "ES=F"
+echo "# Stock Price Tests"
+test_json "WFC (Wells Fargo)"   queryStockPrice WFC
+test_json "AAPL (Apple)"        queryStockPrice AAPL
+test_xml  "MSFT (Microsoft)"    queryStockPrice MSFT
 
-echo "# Eval Expression"
-test_json "Expression 6*7"          queryEval "6*7"
+echo "# Eval Expression Tests"
+test_json "1+2*3"               queryEval "1+2*3"
+test_json "(10-2)/4"            queryEval "(10-2)/4"
+test_xml  "2*(3+4)-5"           queryEval "2*(3+4)-5"
